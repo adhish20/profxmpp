@@ -22,6 +22,21 @@ var Gab = {
                             "</div><div class='roster-jid'>" +
                             jid +
                             "</div></div></li>");
+            var attrs = {xmlns: Strophe.NS.DISCO_INFO};
+
+			var info = $iq({
+				from:Gab.connection.jid,
+				to:jid,
+				type:'get'
+			}).c('query', attrs);
+        	Gab.connection.sendIQ(
+        		info,
+        		function (info){
+        			$(info).find('feature').each(function() {
+                            console.log("var : "+$(this).attr('var'));
+                        });},
+        		function (info){console.log(info);},
+        		60000);
 
             Gab.insert_contact(contact);
         });
@@ -309,7 +324,21 @@ $(document).ready(function () {
         var jid = $(this).find(".roster-jid").text();
         var name = $(this).find(".roster-name").text();
         var jid_id = Gab.jid_to_id(jid);
+        var attrs = {xmlns: Strophe.NS.DISCO_INFO};
 
+		var info = $iq({
+			from:Gab.connection.jid,
+			to:jid,
+			type:'get'
+		}).c('query', attrs);
+        Gab.connection.sendIQ(
+        	info,
+        	function (info){
+        		$(info).find('feature').each(function() {
+                        console.log("var : "+$(this).attr('var'));
+                    });},
+        	function (info){console.log(info);},
+        	60000);
         if ($('#chat-' + jid_id).length === 0) {
             $('#chat-area').tabs('add', '#chat-' + jid_id, name);
             $('#chat-' + jid_id).append(
